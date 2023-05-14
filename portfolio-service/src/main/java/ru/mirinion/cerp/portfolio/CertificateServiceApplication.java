@@ -1,4 +1,4 @@
-package ru.mirinion.cerp.certificateservice;
+package ru.mirinion.cerp.portfolio;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

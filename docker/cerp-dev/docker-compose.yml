@@ -1,0 +1,59 @@
+version: '3.7'
+
+services:
+
+  database:
+    container_name: database
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "cerp_dev"
+    networks:
+      cerp_dev_network:
+        aliases:
+          - "db"
+
+  portfolio-service:
+    container_name: "portfolio-service"
+    image: cerp/certificate-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cerp_dev
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      cerp_dev_network:
+        aliases:
+          - "portfolio"
+
+  eureka-server:
+    container_name: "eureka-server"
+    image: "cerp/eureka-server"
+    ports:
+      - "8070:8070"
+    networks:
+      cerp_dev_network:
+        aliases:
+          - "eureka"
+
+  config-server:
+    container_name: "config-server"
+    image: "cerp/config-server"
+    ports:
+      - "8071:8071"
+    networks:
+      cerp_dev_network:
+        aliases:
+          - "config"
+
+networks:
+  cerp_dev_network:
+    external: true
